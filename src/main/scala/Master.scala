@@ -1,9 +1,15 @@
 package com.kotancode.scalamud
 
-import akka.actor.{Actor, PoisonPill}
-import Actor._
+import akka.actor._
+import akka.routing._
 
+/*
+ * Root-level Game singleton
+ * Creates the Akka Actor System for all subsequent game objects
+ */
 object Game extends App {
-	val server = actorOf(new GameServer).start()
-	server ! ServerStart	
+	val system = ActorSystem("ScalaMUD")
+	val server = system.actorOf(Props(new GameServer()), "server")
+	println("System Starting")
+	server ! ServerStart()	
 }
