@@ -10,8 +10,10 @@ import com.kotancode.scalamud.core.Player
 import com.kotancode.scalamud.core.NewSocket
 import com.kotancode.scalamud.core.TextMessage
 
+import com.kotancode.scalamud.areas.root._
+
 case class ServerStart
-case class PlayerLoggedIn(player:Player)
+case class PlayerLoggedIn
 
 /*
  * The GameServer actor deals with accepting inbound socket
@@ -19,28 +21,34 @@ case class PlayerLoggedIn(player:Player)
  * actor
  */
 class GameServer extends Actor {
-	private var allPlayers = List[Player]()
+	private var allPlayers = List[ActorRef]()
+	private val rootArea = context.actorOf(Props(new RootArea), "areas-root")
+	
 	
 	def receive = {
 		case s:ServerStart => {	
 			context.actorOf(Props(new Actor {
 				def receive = {
-					case ss:ServerStart => {
+					case ss:ServerStart => {						
+						rootArea ! AreaStart
 						startSocketListener
 					}
 				}
 			})) ! s
 		}
-		case PlayerLoggedIn(player) => {
-			handlePlayerLogin(player)
+		case PlayerLoggedIn => {
+			handlePlayerLogin(sender)
 		}
 	}
 	
-	private def handlePlayerLogin(player:Player) = {
+	private def handlePlayerLogin(player:ActorRef) = {
 		println("Player logged in: " + player)
 		allPlayers ::= player
-		for (p <- allPlayers if p.name != player.name) {
-			p.self ! TextMessage(player.name + " logged in.")
+		// TODO: Used to be able to do this by 'cheating'
+		// need to do this without cheating
+		// 		for (p <- allPlayers if p.name != player.name) {
+		for (p <- allPlayers) {
+			p ! TextMessage(player + " logged in.")
 	    }
 	}
 	

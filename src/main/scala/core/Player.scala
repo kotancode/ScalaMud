@@ -1,7 +1,6 @@
 package com.kotancode.scalamud.core
 
 import com.kotancode.scalamud._
-
 import akka.actor._
 import akka.routing._
 
@@ -12,7 +11,6 @@ case class NewSocket(socket: Socket)
 case class TextMessage(message:String)
 
 class Player extends Actor {
-
 	var name:String = "newbsauce"
 	private var inReader: BufferedReader = null
 	private var outWriter: PrintWriter = null
@@ -42,6 +40,11 @@ class Player extends Actor {
 	   inReader = in
 	   outWriter = out
 	
+	   // put the player in the void until we know where they really go
+	   val theVoid = context.actorFor("/user/server/areas-root/thevoid")
+	   println("found the void: "+ theVoid)
+	   theVoid ! EnterInventory
+	
 	   val is: InputStream = classOf[Player].getResourceAsStream("/welcome.txt")
 	   val source = scala.io.Source.fromInputStream(is)
 
@@ -52,7 +55,7 @@ class Player extends Actor {
 	   out.println("Welcome to ScalaMUD, " + name)
 	   out.flush()
 	   println("Player logged in: "+ self)
-	   Game.server ! PlayerLoggedIn(this)
+	   Game.server ! PlayerLoggedIn
 	   while (true) {
 		   val line = inReader.readLine()
 		   outWriter.println(name + ": " + line)
