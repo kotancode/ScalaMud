@@ -3,6 +3,7 @@ package com.kotancode.scalamud.core
 import com.kotancode.scalamud._
 import akka.actor._
 import akka.routing._
+import com.kotancode.scalamud.core.Implicits._
 
 import java.net._
 import java.io._
@@ -11,7 +12,6 @@ case class NewSocket(socket: Socket)
 case class TextMessage(message:String)
 
 class Player extends Actor {
-	var name:String = "newbsauce"
 	private var inReader: BufferedReader = null
 	private var outWriter: PrintWriter = null
 	
@@ -51,14 +51,15 @@ class Player extends Actor {
 	   out.println(source.mkString)
 	   out.print("Login: ")
 	   out.flush()
-	   name = in.readLine();
-	   out.println("Welcome to ScalaMUD, " + name)
+	   var playerName = in.readLine();
+	   out.println("Welcome to ScalaMUD, " + playerName)
+	   self.name = playerName
 	   out.flush()
 	   println("Player logged in: "+ self)
 	   Game.server ! PlayerLoggedIn
 	   while (true) {
 		   val line = inReader.readLine()
-		   outWriter.println(name + ": " + line)
+		   outWriter.println(playerName + ": " + line)
 		   outWriter.flush()
 	   }	
 	 }

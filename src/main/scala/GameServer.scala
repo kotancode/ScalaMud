@@ -6,6 +6,7 @@ import akka.routing._
 import java.net._
 import java.io._
 
+import com.kotancode.scalamud.core.Implicits._
 import com.kotancode.scalamud.core.Player
 import com.kotancode.scalamud.core.NewSocket
 import com.kotancode.scalamud.core.TextMessage
@@ -47,8 +48,8 @@ class GameServer extends Actor {
 		// TODO: Used to be able to do this by 'cheating'
 		// need to do this without cheating
 		// 		for (p <- allPlayers if p.name != player.name) {
-		for (p <- allPlayers) {
-			p ! TextMessage(player + " logged in.")
+		for (p: ActorRef <- allPlayers) {
+			p ! TextMessage(player.name + " logged in.")
 	    }
 	}
 	
