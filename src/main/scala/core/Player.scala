@@ -14,6 +14,7 @@ case class TextMessage(message:String)
 class Player extends Actor {
 	private var inReader: BufferedReader = null
 	private var outWriter: PrintWriter = null
+	private val commander = context.actorOf(Props(new Commander), "commander")
 	
  	implicit def inputStreamWrapper(in: InputStream) =
   		new BufferedReader(new InputStreamReader(in))
@@ -59,6 +60,7 @@ class Player extends Actor {
 	   Game.server ! PlayerLoggedIn
 	   while (true) {
 		   val line = inReader.readLine()
+		   commander ! line
 		   outWriter.println(playerName + ": " + line)
 		   outWriter.flush()
 	   }	
