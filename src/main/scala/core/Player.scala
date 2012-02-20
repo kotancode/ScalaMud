@@ -3,6 +3,11 @@ package com.kotancode.scalamud.core
 import com.kotancode.scalamud._
 import akka.actor._
 import akka.routing._
+import com.kotancode.scalamud.core.cmd.MortalCommandLib
+import com.kotancode.scalamud.core.cmd.WizardCommandLib
+import com.kotancode.scalamud.core.cmd.AttachCommandLib
+import com.kotancode.scalamud.core.cmd.Commander
+import com.kotancode.scalamud.core.cmd.AddCommand
 import com.kotancode.scalamud.core.Implicits._
 
 import java.net._
@@ -11,18 +16,22 @@ import java.io._
 case class NewSocket(socket: Socket)
 case class TextMessage(message:String)
 
-class Player extends Actor {
+class Player extends Mobile {
 	private var inReader: BufferedReader = null
 	private var outWriter: PrintWriter = null
 	private val commander = context.actorOf(Props(new Commander), "commander")
+	private val mortal = context.actorOf(Props(new MortalCommandLib), "mortalcmd")
+	private val wizard = context.actorOf(Props(new WizardCommandLib), "wizardcmd")
 	
  	implicit def inputStreamWrapper(in: InputStream) =
   		new BufferedReader(new InputStreamReader(in))
 
  	implicit def outputStreamWrapper(out: OutputStream) =
   		new PrintWriter(new OutputStreamWriter(out))
+
+	override def handleMessages = super.handleMessages orElse handlePlayerMessages
 	
-	def receive = {
+	def handlePlayerMessages:Receive = {
 		case s:NewSocket => {
 			context.actorOf(Props(new Actor {
 				def receive = {
@@ -56,7 +65,9 @@ class Player extends Actor {
 	   out.println("Welcome to ScalaMUD, " + playerName)
 	   self.name = playerName
 	   out.flush()
-	   println("Player logged in: "+ self)
+
+	   mortal ! AttachCommandLib
+	   wizard ! AttachCommandLib
 	   Game.server ! PlayerLoggedIn
 	   while (true) {
 		   val line = inReader.readLine()

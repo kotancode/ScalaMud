@@ -10,7 +10,7 @@ class Container extends GameObject {
 		super.handleMessages orElse handleContainerMessages
 	}
 	
-	def handleContainerMessages: Receive = {
+	def handleContainerMessages:Receive = {
 		case EnterInventory => {
 			println(sender + " entered my inventory.")
 		}
