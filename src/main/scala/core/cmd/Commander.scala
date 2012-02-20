@@ -10,7 +10,7 @@ import edu.stanford.nlp.ling.TaggedWord
 import edu.stanford.nlp.ling.HasWord
 import edu.stanford.nlp.tagger.maxent.MaxentTagger
 import scala.collection.JavaConverters._
-import scala.collection.mutable.HashSet
+import scala.collection.mutable.ListBuffer
 import com.kotancode.scalamud.core.cmd._
 
 class Commander extends Actor {
@@ -22,9 +22,8 @@ class Commander extends Actor {
 		    val sentence = Sentence.toWordList(wordList);
 		    val taggedSentence = Commander.tagger.tagSentence(sentence).asScala.toList
 		
-			var enrichedWords = new HashSet[EnrichedWord]
+			var enrichedWords = new ListBuffer[EnrichedWord]
 		    for (tw : TaggedWord <- taggedSentence) {
-		//		println(tw.value + "/" + tw.tag)
 				val ew = EnrichedWord(tw)
 				println(ew)
 				enrichedWords += ew
