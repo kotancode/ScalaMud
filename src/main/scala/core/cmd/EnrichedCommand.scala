@@ -10,10 +10,10 @@ import com.kotancode.scalamud.core.lang.Verb
 class EnrichedCommand(val words:ListBuffer[EnrichedWord], val issuer:ActorRef) {
 	
 	def firstVerb = {
-		words collectFirst {case w if w.pos == Verb => w} orElse words.headOption match {
-			case Some(ew) => ew.value
+		words find(_.pos == Verb) orElse words.headOption map(_.value) match {
+			case Some(ew) => ew
 			case _ => ""
-		} 
+		}
 	}
 	
 	override def toString = "[EnrichedCommand words = " + words + ", issuer=" + issuer + "]"
