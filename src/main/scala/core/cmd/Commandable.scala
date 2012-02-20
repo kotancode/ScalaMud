@@ -5,8 +5,6 @@ import akka.routing._
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 
-case object CommandMessage1
-
 sealed abstract class CommandMessage
 case class AddCommand(verbs:Set[String], handlerTarget:ActorRef) extends CommandMessage
 case class Removecommand(verb:String) extends CommandMessage
@@ -18,10 +16,6 @@ trait Commandable {
 	private val verbHandlers: HashMap[Set[String], ActorRef] = new HashMap[Set[String], ActorRef]
 	
 	def handleCommandMessages:akka.actor.Actor.Receive = {
-		case CommandMessage1 => {
-			println("NOOP")
-		}
-				
 		case AddCommand(verbs, handlerTarget) => {
 			verbHandlers.put(verbs, handlerTarget)
 		}
