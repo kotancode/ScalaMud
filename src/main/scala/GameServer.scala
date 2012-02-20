@@ -16,6 +16,7 @@ import com.kotancode.scalamud.areas.root._
 
 case class ServerStart
 case class PlayerLoggedIn
+case object PlayerLoggedOut
 
 /*
  * The GameServer actor deals with accepting inbound socket
@@ -41,6 +42,9 @@ class GameServer extends Actor {
 		case PlayerLoggedIn => {
 			handlePlayerLogin(sender)
 		}
+		case PlayerLoggedOut => {
+			handlePlayerLogout(sender)
+		}
 	}
 	
 	private def handlePlayerLogin(player:ActorRef) = {
@@ -48,6 +52,14 @@ class GameServer extends Actor {
 		self.inventory += player
 		for (p: ActorRef <- self.inventory if p.name != player.name) {
 			p ! TextMessage(player.name + " logged in.")
+	    }
+	}
+	
+	private def handlePlayerLogout(player:ActorRef) = {
+		println("Player logged out: " + player.name)
+		self.inventory -= player
+		for (p: ActorRef <- self.inventory if p.name != player.name) {
+			p ! TextMessage(player.name + " logged out.")
 	    }
 	}
 	

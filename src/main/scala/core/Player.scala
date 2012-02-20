@@ -49,11 +49,13 @@ class Player extends Mobile {
 	private def setupSocket(in: BufferedReader, out: PrintWriter) {
 	   inReader = in
 	   outWriter = out
+	   var running:Boolean = true
 	
 	   // put the player in the void until we know where they really go
 	   val theVoid = context.actorFor("/user/server/areas-root/thevoid")
 	   println("found the void: "+ theVoid)
-	   theVoid ! EnterInventory
+	   self ! Move(theVoid)
+//	   theVoid ! EnterInventory(null)
 	
 	   val is: InputStream = classOf[Player].getResourceAsStream("/welcome.txt")
 	   val source = scala.io.Source.fromInputStream(is)
@@ -69,11 +71,19 @@ class Player extends Mobile {
 	   mortal ! AttachCommandLib
 	   wizard ! AttachCommandLib
 	   Game.server ! PlayerLoggedIn
-	   while (true) {
+	   while (running) {
 		   val line = inReader.readLine()
-		   commander ! line
-		   outWriter.println(playerName + ": " + line)
-		   outWriter.flush()
+		   if (line == null) {
+			    running = false
+		        println("It appears as though this player disconnected.")
+			    self.environment ! LeaveInventory(null)
+				Game.server ! PlayerLoggedOut
+				context.stop(self)
+		   } else {
+		   		commander ! line
+		   		outWriter.println(playerName + ": " + line)
+		   		outWriter.flush()
+		   }
 	   }	
 	 }
 }

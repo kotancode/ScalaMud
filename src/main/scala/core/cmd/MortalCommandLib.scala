@@ -17,6 +17,11 @@ class MortalCommandLib extends Actor {
 		case cmd:EnrichedCommand if cmd.firstVerb == "who" => {
 			handleWho(cmd.issuer)
 		}
+		
+		case cmd:EnrichedCommand if cmd.firstVerb == "look" => {
+			handleLook(cmd.issuer)
+		}
+		
 		case AttachCommandLib => {
 			attachToSender(sender)
 		}
@@ -31,8 +36,15 @@ class MortalCommandLib extends Actor {
 		issuer ! TextMessage(stringOut)
 	}
 	
+	def handleLook(issuer:ActorRef) = {
+		var stringOut = issuer.environment.description + "\n"
+		stringOut += issuer.environment.inventory.map(_.name).mkString(", ")
+		issuer ! TextMessage(stringOut)
+	}
+	
 	def attachToSender(sender:ActorRef) = {
 		sender ! AddCommand(Set("who"), self)
+		sender ! AddCommand(Set("look", "l"), self)
 	}
 	
 	
