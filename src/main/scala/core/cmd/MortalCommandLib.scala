@@ -2,6 +2,7 @@ package com.kotancode.scalamud.core.cmd
 
 import com.kotancode.scalamud.core.ServerStats
 import com.kotancode.scalamud.core.TextMessage
+import com.kotancode.scalamud.core.Say
 import com.kotancode.scalamud.Game
 import com.kotancode.scalamud.core.Implicits._
 import akka.actor._
@@ -22,6 +23,10 @@ class MortalCommandLib extends Actor {
 			handleLook(cmd.issuer)
 		}
 		
+		case cmd:EnrichedCommand if cmd.firstVerb == "say" => {
+			handleSay(cmd.issuer, cmd)
+		}
+		
 		case AttachCommandLib => {
 			attachToSender(sender)
 		}
@@ -38,13 +43,18 @@ class MortalCommandLib extends Actor {
 	
 	def handleLook(issuer:ActorRef) = {
 		var stringOut = issuer.environment.description + "\n"
-		stringOut += issuer.environment.inventory.map(_.name).mkString(", ")
+		stringOut += "You see " + issuer.environment.inventory.map(_.name).mkString(", ")
 		issuer ! TextMessage(stringOut)
 	}
 	
 	def attachToSender(sender:ActorRef) = {
 		sender ! AddCommand(Set("who"), self)
 		sender ! AddCommand(Set("look", "l"), self)
+		sender ! AddCommand(Set("say"), self)
+	}
+	
+	def handleSay(issuer:ActorRef, cmd:EnrichedCommand) = {
+		issuer ! Say(issuer, cmd.words.drop(1).map(_.value).mkString(" "))
 	}
 	
 	

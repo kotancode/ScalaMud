@@ -6,7 +6,9 @@ import akka.actor._
 import akka.routing._
 import com.kotancode.scalamud.core.Implicits._
 
-case class Move(to:ActorRef)
+sealed abstract class GameObjectMessage
+case class Move(to:ActorRef) extends GameObjectMessage
+case class Say(issuer:ActorRef, text:String) extends GameObjectMessage
 
 abstract class GameObject extends Actor {
 	
@@ -17,6 +19,11 @@ abstract class GameObject extends Actor {
 			println("Moving to " + to)
 			self.environment = to
 			to ! EnterInventory(null)
+		}
+		case Say(issuer, text) => {
+			issuer.environment.inventory.filter( ob => ob.path != issuer.path ).foreach( ob => {
+				ob ! TextMessage(issuer.name + " says: " + text)
+			})
 		}
 	}
 }
