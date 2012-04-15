@@ -18,6 +18,11 @@
 		  <name>Akka Maven Repository</name>
 		  <url>http://akka.io/repository</url>
 		</repository>
+		<repository>
+			<id>akka.releases</id>
+			<name>Akka Releases</name>
+			<url>http://repo.akka.io/releases/</url>
+		</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -40,7 +45,7 @@
 		<dependency>
 		  <groupId>com.typesafe.akka</groupId>
 		  <artifactId>akka-actor</artifactId>
-		  <version>2.0-RC1</version>
+		  <version>2.0</version>
 		</dependency>
         <dependency>
             <groupId>junit</groupId>
