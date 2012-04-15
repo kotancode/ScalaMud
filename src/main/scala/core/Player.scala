@@ -23,6 +23,8 @@ class Player extends Mobile {
 	private val mortal = context.actorOf(Props(new MortalCommandLib), "mortalcmd")
 	private val wizard = context.actorOf(Props(new WizardCommandLib), "wizardcmd")
 	
+	self.environment = null 
+	
  	implicit def inputStreamWrapper(in: InputStream) =
   		new BufferedReader(new InputStreamReader(in))
 

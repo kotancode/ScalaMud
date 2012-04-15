@@ -7,7 +7,7 @@ import scala.collection.mutable.HashSet
 
 sealed abstract class CommandMessage
 case class AddCommand(verbs:Set[String], handlerTarget:ActorRef) extends CommandMessage
-case class Removecommand(verb:String) extends CommandMessage
+case class RemoveCommand(verb:String) extends CommandMessage
 case class HandleCommand(command:EnrichedCommand) extends CommandMessage
 
 
@@ -22,6 +22,12 @@ trait Commandable {
 		
 		case HandleCommand(cmd) => {
 			dispatch(cmd)
+		}
+		
+		case RemoveCommand(verb) => {
+			for ( (verbset, handler) <- verbHandlers) {
+				if (verbset.contains(verb)) verbHandlers.remove(verbset)
+			}
 		}
 	}
 	

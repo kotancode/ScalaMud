@@ -10,4 +10,9 @@ class TheVoid extends Room {
 	self.description = "You are in the void"
 	
 	self.name = "The Void"
+	
+	exits = Seq(
+		(Set("north", "n"), "user/server/areas-root/thevoid", "You head north."),
+		(Set("south", "s"), "user/server/areas-root/thevoid", "You head south.")
+	)
 }

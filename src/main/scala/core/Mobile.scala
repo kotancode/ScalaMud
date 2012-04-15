@@ -15,4 +15,12 @@ class Mobile extends Container with Commandable {
 			println("NOOP")
 		}
 	}
+	
+	override def entered_inv(ob: ActorRef, from: ActorRef) = {
+		
+	}
+	
+	override def left_inv(ob:ActorRef, to: ActorRef) = {
+		
+	}
 }

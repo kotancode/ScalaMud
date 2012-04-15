@@ -16,10 +16,10 @@ import com.kotancode.scalamud.core.cmd._
 class Commander extends Actor {
 	def receive = {
 		case s:String => {
-			val words = s.split(" ");
-			val wordList = new java.util.ArrayList[String]();
+			val words = s.split(" ")
+			val wordList = new java.util.ArrayList[String]()
 			for (elem <- words) wordList.add(elem)
-		    val sentence = Sentence.toWordList(wordList);
+		    val sentence = Sentence.toWordList(wordList)
 		    val taggedSentence = Commander.tagger.tagSentence(sentence).asScala.toList
 		
 			var enrichedWords = new ListBuffer[EnrichedWord]

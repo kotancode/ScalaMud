@@ -17,8 +17,8 @@ abstract class GameObject extends Actor {
 	def handleMessages: Receive = {
 		case Move(to) => {
 			println("Moving to " + to)
+			to ! EnterInventory(self.environment)
 			self.environment = to
-			to ! EnterInventory(null)
 		}
 		case Say(issuer, text) => {
 			issuer.environment.inventory.filter( ob => ob.path != issuer.path ).foreach( ob => {
