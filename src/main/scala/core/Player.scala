@@ -16,7 +16,7 @@ import java.io._
 case class NewSocket(socket: Socket)
 case class TextMessage(message:String)
 
-class Player extends Mobile {
+class Player extends Mobile with ActorLogging {
 	private var inReader: BufferedReader = null
 	private var outWriter: PrintWriter = null
 	private val commander = context.actorOf(Props(new Commander), "commander")
@@ -55,9 +55,7 @@ class Player extends Mobile {
 	
 	   // put the player in the void until we know where they really go
 	   val theVoid = context.actorFor("/user/server/areas-root/thevoid")
-	   println("found the void: "+ theVoid)
 	   self ! Move(theVoid)
-//	   theVoid ! EnterInventory(null)
 	
 	   val is: InputStream = classOf[Player].getResourceAsStream("/welcome.txt")
 	   val source = scala.io.Source.fromInputStream(is)
@@ -77,7 +75,7 @@ class Player extends Mobile {
 		   val line = inReader.readLine()
 		   if (line == null) {
 			    running = false
-		        println("It appears as though this player disconnected.")
+		        log.info("Player disconnected.")
 			    self.environment ! LeaveInventory(null)
 				Game.server ! PlayerLoggedOut
 				context.stop(self)

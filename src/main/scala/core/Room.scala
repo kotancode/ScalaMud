@@ -19,7 +19,7 @@ class Room extends Container {
 	
 	def handleRoomMessages:Receive = {
 		case RoomMessage(text) => {
-			println("Got a room message: " + text)
+			log.info("Got a room message {}", text)
 		}
 		
 		case cmd:EnrichedCommand if exits.map( { case (dirset, actorpath, msg) => dirset }).flatten.contains(cmd.firstVerb) => {
@@ -55,7 +55,7 @@ class Room extends Container {
 				case Some( (dirset, path, msg) ) => (path, msg)
 				case None => ("", "")
 			} 
-		println("Player " + ob.name + " wanted to go in the direction of akka://ScalaMUD/" + target._1)
+		log.info("Player [{}] wanted to go in direction of akka://ScalaMUD/{}", ob.name, target._1)
 		ob ! TextMessage(target._2)
 		ob ! Move(Game.system.actorFor("akka://ScalaMUD/" + target._1))
 	}
