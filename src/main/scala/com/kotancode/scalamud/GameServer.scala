@@ -14,8 +14,8 @@ import com.kotancode.scalamud.core.ServerStats
 
 import com.kotancode.scalamud.areas.root._
 
-case class ServerStart
-case class PlayerLoggedIn
+case class ServerStart()
+case class PlayerLoggedIn()
 case object PlayerLoggedOut
 
 /*

@@ -8,3 +8,17 @@
                             _-                     (
 
 An experiment in learning Scala using the fun of building a MUD as the learning vehicle.
+
+
+
+
+Running ScalaMUD
+----------------
+
+You need SBT installed, then do:
+
+  sbt run
+
+Then
+
+  telnet localhost 8888

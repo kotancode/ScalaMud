@@ -43,7 +43,7 @@ class Room extends Container {
 	}
 	
 	def entered_room(ob:ActorRef, from:ActorRef) = {
-		
+		ob ! TextMessage(self.description + ".")
 	}
 	
 	def left_room(ob:ActorRef, to:ActorRef) = {
