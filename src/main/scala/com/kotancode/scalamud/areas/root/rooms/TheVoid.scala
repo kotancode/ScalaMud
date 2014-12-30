@@ -13,6 +13,6 @@ class TheVoid extends Room {
 	
 	exits = Seq(
 		(Set("north", "n"), "user/server/areas-root/thevoid", "You head north."),
-		(Set("south", "s"), "user/server/areas-root/thevoid", "You head south.")
+		(Set("south", "s"), "user/server/areas-root/thepit", "You head south and fell into a pit.")
 	)
 }

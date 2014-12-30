@@ -9,7 +9,7 @@ import akka.actor._
 import akka.routing._
 
 abstract class CommandLibMessage
-case class AttachCommandLib extends CommandLibMessage
+case class AttachCommandLib() extends CommandLibMessage
 
 class MortalCommandLib extends Actor {
 	def receive = handleMortalCommands
